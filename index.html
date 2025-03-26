@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Style Messenger</title>
+    <style>
+        :root {
+            --github-black: #24292e;
+            --github-gray: #f6f8fa;
+            --github-border: #e1e4e8;
+            --github-blue: #0366d6;
+            --github-text: #24292e;
+            --github-text-secondary: #586069;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+        }
+        
+        body {
+            background-color: var(--github-gray);
+            color: var(--github-text);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .app-container {
+            width: 90%;
+            max-width: 1200px;
+            height: 90vh;
+            background-color: white;
+            border-radius: 6px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            overflow: hidden;
+            border: 1px solid var(--github-border);
+        }
+        
+        .sidebar {
+            width: 300px;
+            background-color: white;
+            border-right: 1px solid var(--github-border);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .logo {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--github-border);
+        }
+        
+        .logo-icon {
+            color: var(--github-blue);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--github-border);
+        }
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--github-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            overflow: hidden;
+        }
+        
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .username {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .user-login {
+            font-size: 12px;
+            color: var(--github-text-secondary);
+        }
+        
+        .menu {
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        
+        .menu-item {
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+        
+        .menu-item:hover {
+            background-color: var(--github-gray);
+        }
+        
+        .menu-item.active {
+            background-color: var(--github-blue);
+            color: white;
+        }
+        
+        .menu-item-icon {
+            font-size: 16px;
+        }
+        
+        .new-chat-btn {
+            background-color: var(--github-blue);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-top: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .new-chat-btn:hover {
+            background-color: #035fc7;
+        }
+        
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--github-border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background-color: var(--github-gray);
+        }
+        
+        .chat-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--github-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            overflow: hidden;
+        }
+        
+        .chat-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .chat-name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .chat-login {
+            font-size: 14px;
+            color: var(--github-text-secondary);
+        }
+        
+        .messages-container {
+            flex-grow: 1;
+            padding: 16px;
+            overflow-y: auto;
+            background-color: white;
+        }
+        
+        .message {
+            max-width: 70%;
+            padding: 8px 16px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            position: relative;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .message-incoming {
+            background-color: var(--github-gray);
+            margin-right: auto;
+            border: 1px solid var(--github-border);
+        }
+        
+        .message-outgoing {
+            background-color: var(--github-blue);
+            color: white;
+            margin-left: auto;
+        }
+        
+        .message-sender {
+            font-weight: 600;
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+        
+        .message-time {
+            font-size: 11px;
+            opacity: 0.7;
+            text-align: right;
+            margin-top: 4px;
+        }
+        
+        .message-input-container {
+            padding: 16px;
+            border-top: 1px solid var(--github-border);
+            display: flex;
+            gap: 8px;
+            background-color: var(--github-gray);
+        }
+        
+        .message-input {
+            flex-grow: 1;
+            padding: 8px 12px;
+            border: 1px solid var(--github-border);
+            border-radius: 6px;
+            outline: none;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .message-input:focus {
+            border-color: var(--github-blue);
+            box-shadow: 0 0 0 3px rgba(3, 102, 214, 0.1);
+        }
+        
+        .send-btn {
+            background-color: var(--github-blue);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+        
+        .send-btn:hover {
+            background-color: #035fc7;
+        }
+        
+        .auth-container {
+            width: 340px;
+            background-color: white;
+            border-radius: 6px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            border: 1px solid var(--github-border);
+        }
+        
+        .auth-header {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        
+        .auth-logo {
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: var(--github-black);
+        }
+        
+        .auth-title {
+            font-size: 24px;
+            font-weight: 300;
+            margin-bottom: 16px;
+            color: var(--github-text);
+        }
+        
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .form-label {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .form-input {
+            padding: 8px 12px;
+            border: 1px solid var(--github-border);
+            border-radius: 6px;
+            outline: none;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .form-input:focus {
+            border-color: var(--github-blue);
+            box-shadow: 0 0 0 3px rgba(3, 102, 214, 0.1);
+        }
+        
+        .auth-btn {
+            background-color: var(--github-blue);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 8px;
+            width: 100%;
+        }
+        
+        .auth-btn:hover {
+            background-color: #035fc7;
+        }
+        
+        .auth-footer {
+            text-align: center;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--github-border);
+            font-size: 14px;
+        }
+        
+        .auth-link {
+            color: var(--github-blue);
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        .auth-link:hover {
+            text-decoration: underline;
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.2s;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .modal {
+            background-color: white;
+            border-radius: 6px;
+            padding: 16px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            transform: translateY(20px);
+            transition: all 0.2s;
+            border: 1px solid var(--github-border);
+        }
+        
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--github-border);
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--github-text-secondary);
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--github-border);
+            border-radius: 6px;
+            margin-bottom: 16px;
+            outline: none;
+            font-size: 14px;
+        }
+        
+        .search-input:focus {
+            border-color: var(--github-blue);
+            box-shadow: 0 0 0 3px rgba(3, 102, 214, 0.1);
+        }
+        
+        .user-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .user-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .user-item:hover {
+            background-color: var(--github-gray);
+        }
+        
+        .user-item-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--github-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            overflow: hidden;
+        }
+        
+        .user-item-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .user-item-info {
+            flex-grow: 1;
+        }
+        
+        .user-item-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .user-item-login {
+            font-size: 12px;
+            color: var(--github-text-secondary);
+        }
+        
+        .user-item-status {
+            font-size: 12px;
+            color: var(--success);
+        }
+        
+        .no-chats {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--github-text-secondary);
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .no-chats-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            color: var(--github-border);
+        }
+        
+        .no-chats-title {
+            font-size: 20px;
+            font-weight: 300;
+            margin-bottom: 8px;
+        }
+        
+        .no-chats-text {
+            font-size: 14px;
+            margin-bottom: 16px;
+            max-width: 300px;
+        }
+        
+        .chat-list {
+            list-style: none;
+        }
+        
+        .chat-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--github-border);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .chat-item:hover {
+            background-color: var(--github-gray);
+        }
+        
+        .chat-item-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        
+        .chat-item-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--github-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            overflow: hidden;
+        }
+        
+        .chat-item-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .chat-item-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .chat-item-login {
+            font-size: 12px;
+            color: var(--github-text-secondary);
+        }
+        
+        .chat-item-preview {
+            font-size: 13px;
+            color: var(--github-text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .chat-item-time {
+            font-size: 12px;
+            color: var(--github-text-secondary);
+            text-align: right;
+        }
+        
+        @media (max-width: 768px) {
+            .app-container {
+                width: 100%;
+                height: 100vh;
+                border-radius: 0;
+            }
+            
+            .sidebar {
+                width: 80px;
+                padding: 8px;
+            }
+            
+            .logo span, .username, .user-login, .menu-item span {
+                display: none;
+            }
+            
+            .logo {
+                justify-content: center;
+            }
+            
+            .menu-item {
+                justify-content: center;
+            }
+            
+            .user-info {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .new-chat-btn span {
+                display: none;
+            }
+            
+            .new-chat-btn {
+                justify-content: center;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div id="auth-container" class="auth-container">
+        <div class="auth-header">
+            <div class="auth-logo">
+                <i class="fab fa-github"></i>
+            </div>
+            <h1 class="auth-title">Git Messenger</h1>
+        </div>
+        <form id="auth-form" class="auth-form">
+            <div class="form-group">
+                <label for="login" class="form-label">Username</label>
+                <input type="text" id="login" class="form-input" placeholder="Enter your username" required>
+            </div>
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="auth-btn" id="login-btn">Sign in</button>
+        </form>
+        <div class="auth-footer">
+            New to Git Messenger? <a class="auth-link" id="switch-to-register">Create an account</a>
+        </div>
+    </div>
+
+    <div id="app-container" class="app-container" style="display: none;">
+        <div class="sidebar">
+            <div class="logo">
+                <i class="fab fa-github logo-icon"></i>
+                <span>Git Messenger</span>
+            </div>
+            
+            <div class="user-info">
+                <div class="avatar" id="user-avatar">
+                    <img id="user-avatar-img" src="" alt="User avatar">
+                </div>
+                <div>
+                    <div class="username" id="username-display">User</div>
+                    <div class="user-login" id="user-login-display">@user</div>
+                </div>
+            </div>
+            
+            <div class="menu">
+                <div class="menu-item active" id="all-chats-btn">
+                    <i class="fas fa-inbox menu-item-icon"></i>
+                    <span>Inbox</span>
+                </div>
+                <div class="menu-item" id="contacts-btn">
+                    <i class="fas fa-user-friends menu-item-icon"></i>
+                    <span>Contacts</span>
+                </div>
+            </div>
+            
+            <button class="new-chat-btn" id="new-chat-btn">
+                <i class="fas fa-plus"></i>
+                <span>New chat</span>
+            </button>
+        </div>
+        
+        <div class="main-content">
+            <div id="chat-empty" class="no-chats">
+                <i class="fas fa-comment-slash no-chats-icon"></i>
+                <h2 class="no-chats-title">No active chat</h2>
+                <p class="no-chats-text">Select an existing chat or start a new conversation</p>
+                <button class="auth-btn" id="empty-new-chat-btn" style="margin-top: 16px;">
+                    <i class="fas fa-plus"></i> New chat
+                </button>
+            </div>
+            
+            <div id="chat-list-container" style="display: none; height: 100%; overflow-y: auto;">
+                <ul class="chat-list" id="chat-list">
+                    <!-- Chats will be listed here -->
+                </ul>
+            </div>
+            
+            <div id="chat-active" style="display: none; height: 100%;">
+                <div class="chat-header">
+                    <div class="chat-avatar" id="chat-avatar">
+                        <img id="chat-avatar-img" src="" alt="Chat avatar">
+                    </div>
+                    <div>
+                        <div class="chat-name" id="chat-name">Friend</div>
+                        <div class="chat-login" id="chat-login">@friend</div>
+                    </div>
+                </div>
+                
+                <div class="messages-container" id="messages-container">
+                    <!-- Messages will appear here -->
+                </div>
+                
+                <div class="message-input-container">
+                    <input type="text" class="message-input" id="message-input" placeholder="Type a message...">
+                    <button class="send-btn" id="send-btn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="new-chat-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">New chat</h2>
+                <button class="modal-close" id="close-new-chat-modal">&times;</button>
+            </div>
+            <input type="text" class="search-input" id="user-search" placeholder="Search users...">
+            <div class="user-list" id="user-list">
+                <!-- User list will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="register-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Create account</h2>
+                <button class="modal-close" id="close-register-modal">&times;</button>
+            </div>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="reg-login" class="form-label">Username</label>
+                    <input type="text" id="reg-login" class="form-input" placeholder="Choose a username" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-password" class="form-label">Password</label>
+                    <input type="password" id="reg-password" class="form-input" placeholder="Choose a password" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-name" class="form-label">Full name</label>
+                    <input type="text" id="reg-name" class="form-input" placeholder="Your full name" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-avatar" class="form-label">Avatar URL (optional)</label>
+                    <input type="text" id="reg-avatar" class="form-input" placeholder="Paste image URL">
+                </div>
+                <button type="submit" class="auth-btn">Create account</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Application state
+        const state = {
+            currentUser: null,
+            users: [], // Will be populated with registered users
+            chats: [],
+            currentChat: null,
+            showingChatList: true
+        };
+
+        // DOM elements
+        const elements = {
+            authContainer: document.getElementById('auth-container'),
+            appContainer: document.getElementById('app-container'),
+            authForm: document.getElementById('auth-form'),
+            loginInput: document.getElementById('login'),
+            passwordInput: document.getElementById('password'),
+            loginBtn: document.getElementById('login-btn'),
+            switchToRegister: document.getElementById('switch-to-register'),
+            userAvatar: document.getElementById('user-avatar'),
+            userAvatarImg: document.getElementById('user-avatar-img'),
+            usernameDisplay: document.getElementById('username-display'),
+            userLoginDisplay: document.getElementById('user-login-display'),
+            newChatBtn: document.getElementById('new-chat-btn'),
+            emptyNewChatBtn: document.getElementById('empty-new-chat-btn'),
+            newChatModal: document.getElementById('new-chat-modal'),
+            closeNewChatModal: document.getElementById('close-new-chat-modal'),
+            userSearch: document.getElementById('user-search'),
+            userList: document.getElementById('user-list'),
+            registerModal: document.getElementById('register-modal'),
+            closeRegisterModal: document.getElementById('close-register-modal'),
+            registerForm: document.getElementById('register-form'),
+            chatEmpty: document.getElementById('chat-empty'),
+            chatListContainer: document.getElementById('chat-list-container'),
+            chatList: document.getElementById('chat-list'),
+            chatActive: document.getElementById('chat-active'),
+            messagesContainer: document.getElementById('messages-container'),
+            messageInput: document.getElementById('message-input'),
+            sendBtn: document.getElementById('send-btn'),
+            chatAvatar: document.getElementById('chat-avatar'),
+            chatAvatarImg: document.getElementById('chat-avatar-img'),
+            chatName: document.getElementById('chat-name'),
+            chatLogin: document.getElementById('chat-login'),
+            allChatsBtn: document.getElementById('all-chats-btn'),
+            contactsBtn: document.getElementById('contacts-btn')
+        };
+
+        // Initialize the app
+        function init() {
+            // Check for saved user
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                state.currentUser = JSON.parse(savedUser);
+                showApp();
+            }
+
+            // Event listeners
+            elements.authForm.addEventListener('submit', handleLogin);
+            elements.switchToRegister.addEventListener('click', () => {
+                elements.registerModal.classList.add('active');
+            });
+            elements.closeRegisterModal.addEventListener('click', () => {
+                elements.registerModal.classList.remove('active');
+            });
+            elements.registerForm.addEventListener('submit', handleRegister);
+            elements.newChatBtn.addEventListener('click', () => {
+                elements.newChatModal.classList.add('active');
+                renderUserList();
+            });
+            elements.emptyNewChatBtn.addEventListener('click', () => {
+                elements.newChatModal.classList.add('active');
+                renderUserList();
+            });
+            elements.closeNewChatModal.addEventListener('click', () => {
+                elements.newChatModal.classList.remove('active');
+            });
+            elements.userSearch.addEventListener('input', renderUserList);
+            elements.sendBtn.addEventListener('click', sendMessage);
+            elements.messageInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            elements.allChatsBtn.addEventListener('click', () => {
+                state.showingChatList = true;
+                updateMenuActiveState();
+                showChatList();
+            });
+            elements.contactsBtn.addEventListener('click', () => {
+                state.showingChatList = false;
+                updateMenuActiveState();
+                // In a real app, you would show contacts here
+                alert('Contacts feature would be implemented here');
+            });
+
+            // Generate some random users for demo
+            generateDemoUsers();
+        }
+
+        // Generate demo users (in a real app, these would come from a server)
+        function generateDemoUsers() {
+            const demoUsers = [
+                { id: 1, login: 'alexey', name: 'Alexey Ivanov', avatar: 'https://avatars.githubusercontent.com/u/1?v=4' },
+                { id: 2, login: 'maria', name: 'Maria Petrova', avatar: 'https://avatars.githubusercontent.com/u/2?v=4' },
+                { id: 3, login: 'ivan', name: 'Ivan Sidorov', avatar: 'https://avatars.githubusercontent.com/u/3?v=4' },
+                { id: 4, login: 'elena', name: 'Elena Smirnova', avatar: 'https://avatars.githubusercontent.com/u/4?v=4' },
+                { id: 5, login: 'dmitry', name: 'Dmitry Kuznetsov', avatar: 'https://avatars.githubusercontent.com/u/5?v=4' }
+            ];
+            
+            state.users = demoUsers;
+        }
+
+        // Handle login
+        function handleLogin(e) {
+            e.preventDefault();
+            const login = elements.loginInput.value;
+            const password = elements.passwordInput.value;
+            
+            // In a real app, this would check with a server
+            if (login && password) {
+                const user = state.users.find(u => u.login === login);
+                if (user) {
+                    state.currentUser = user;
+                    localStorage.setItem('currentUser', JSON.stringify(user));
+                    showApp();
+                } else {
+                    alert('User not found');
+                }
+            } else {
+                alert('Please fill in all fields');
+            }
+        }
+
+        // Handle registration
+        function handleRegister(e) {
+            e.preventDefault();
+            const login = document.getElementById('reg-login').value;
+            const password = document.getElementById('reg-password').value;
+            const name = document.getElementById('reg-name').value;
+            const avatar = document.getElementById('reg-avatar').value || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0366d6&color=fff`;
+            
+            if (login && password && name) {
+                if (state.users.some(u => u.login === login)) {
+                    alert('Username already taken');
+                    return;
+                }
+                
+                const newUser = {
+                    id: state.users.length + 1,
+                    login,
+                    name,
+                    avatar,
+                    online: true
+                };
+                
+                state.users.push(newUser);
+                state.currentUser = newUser;
+                localStorage.setItem('currentUser', JSON.stringify(newUser));
+                
+                elements.registerModal.classList.remove('active');
+                showApp();
+                elements.registerForm.reset();
+            } else {
+                alert('Please fill in all required fields');
+            }
+        }
+
+        // Show the main app
+        function showApp() {
+            elements.authContainer.style.display = 'none';
+            elements.appContainer.style.display = 'flex';
+            
+            // Update user info
+            elements.userAvatarImg.src = state.currentUser.avatar;
+            elements.userAvatarImg.alt = state.currentUser.name;
+            elements.usernameDisplay.textContent = state.currentUser.name;
+            elements.userLoginDisplay.textContent = `@${state.currentUser.login}`;
+            
+            // Show chat list by default
+            state.showingChatList = true;
+            updateMenuActiveState();
+            showChatList();
+        }
+
+        // Update which menu item is active
+        function updateMenuActiveState() {
+            elements.allChatsBtn.classList.toggle('active', state.showingChatList);
+            elements.contactsBtn.classList.toggle('active', !state.showingChatList);
+        }
+
+        // Show chat list
+        function showChatList() {
+            renderChatList();
+            elements.chatEmpty.style.display = 'none';
+            elements.chatActive.style.display = 'none';
+            elements.chatListContainer.style.display = 'block';
+        }
+
+        // Show empty chat state
+        function showEmptyChat() {
+            elements.chatEmpty.style.display = 'flex';
+            elements.chatActive.style.display = 'none';
+            elements.chatListContainer.style.display = 'none';
+        }
+
+        // Show active chat
+        function showChat(chatId) {
+            state.currentChat = state.chats.find(c => c.id === chatId);
+            
+            // Find the other participant
+            const participantId = state.currentChat.participants.find(id => id !== state.currentUser.id);
+            const participant = state.users.find(u => u.id === participantId);
+            
+            // Update chat info
+            elements.chatAvatarImg.src = participant.avatar;
+            elements.chatAvatarImg.alt = participant.name;
+            elements.chatName.textContent = participant.name;
+            elements.chatLogin.textContent = `@${participant.login}`;
+            
+            // Render messages
+            renderMessages();
+            
+            elements.chatEmpty.style.display = 'none';
+            elements.chatListContainer.style.display = 'none';
+            elements.chatActive.style.display = 'flex';
+        }
+
+        // Render chat list
+        function renderChatList() {
+            if (!state.currentUser) return;
+            
+            const userChats = state.chats.filter(chat => 
+                chat.participants.includes(state.currentUser.id)
+            );
+            
+            if (userChats.length === 0) {
+                showEmptyChat();
+                return;
+            }
+            
+            elements.chatList.innerHTML = userChats.map(chat => {
+                // Find the other participant
+                const participantId = chat.participants.find(id => id !== state.currentUser.id);
+                const participant = state.users.find(u => u.id === participantId);
+                const lastMessage = chat.messages[chat.messages.length - 1];
+                
+                return `
+                    <li class="chat-item" data-id="${chat.id}">
+                        <div class="chat-item-header">
+                            <div class="chat-item-avatar">
+                                <img src="${participant.avatar}" alt="${participant.name}">
+                            </div>
+                            <div>
+                                <div class="chat-item-name">${participant.name}</div>
+                                <div class="chat-item-login">@${participant.login}</div>
+                            </div>
+                        </div>
+                        ${lastMessage ? `
+                            <div class="chat-item-preview">
+                                ${lastMessage.senderId === state.currentUser.id ? 'You: ' : ''}
+                                ${lastMessage.text}
+                            </div>
+                            <div class="chat-item-time">${lastMessage.time}</div>
+                        ` : ''}
+                    </li>
+                `;
+            }).join('');
+            
+            // Add click handlers
+            document.querySelectorAll('.chat-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const chatId = parseInt(item.getAttribute('data-id'));
+                    showChat(chatId);
+                });
+            });
+        }
+
+        // Render user list for new chat
+        function renderUserList() {
+            if (!state.currentUser) return;
+            
+            const searchTerm = elements.userSearch.value.toLowerCase();
+            
+            // Filter users:
+            // 1. Exclude current user
+            // 2. Filter by search term
+            // 3. Exclude users we already have chats with
+            const filteredUsers = state.users.filter(user => {
+                const hasChat = state.chats.some(chat => 
+                    chat.participants.includes(state.currentUser.id) && 
+                    chat.participants.includes(user.id)
+                );
+                
+                return user.id !== state.currentUser.id && 
+                       (user.name.toLowerCase().includes(searchTerm) || 
+                        user.login.toLowerCase().includes(searchTerm)) && 
+                       !hasChat;
+            });
+            
+            elements.userList.innerHTML = filteredUsers.map(user => `
+                <div class="user-item" data-id="${user.id}">
+                    <div class="user-item-avatar">
+                        <img src="${user.avatar}" alt="${user.name}">
+                    </div>
+                    <div class="user-item-info">
+                        <div class="user-item-name">${user.name}</div>
+                        <div class="user-item-login">@${user.login}</div>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Add click handlers
+            document.querySelectorAll('.user-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const userId = parseInt(item.getAttribute('data-id'));
+                    createOrOpenChat(userId);
+                });
+            });
+        }
+
+        // Create or open chat with user
+        function createOrOpenChat(userId) {
+            // Check if chat already exists
+            const existingChat = state.chats.find(chat => 
+                chat.participants.includes(state.currentUser.id) && 
+                chat.participants.includes(userId)
+            );
+            
+            if (existingChat) {
+                showChat(existingChat.id);
+            } else {
+                // Create new chat
+                const newChat = {
+                    id: state.chats.length + 1,
+                    participants: [state.currentUser.id, userId],
+                    messages: []
+                };
+                
+                state.chats.push(newChat);
+                showChat(newChat.id);
+            }
+            
+            elements.newChatModal.classList.remove('active');
+        }
+
+        // Render messages
+        function renderMessages() {
+            if (!state.currentChat) return;
+            
+            // Find the other participant
+            const participantId = state.currentChat.participants.find(id => id !== state.currentUser.id);
+            const participant = state.users.find(u => u.id === participantId);
+            
+            elements.messagesContainer.innerHTML = state.currentChat.messages.map(msg => {
+                const isOutgoing = msg.senderId === state.currentUser.id;
+                
+                return `
+                    <div class="message ${isOutgoing ? 'message-outgoing' : 'message-incoming'}">
+                        ${!isOutgoing ? `<div class="message-sender">${participant.name}</div>` : ''}
+                        <div class="message-text">${msg.text}</div>
+                        <div class="message-time">${msg.time}</div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Scroll to bottom
+            elements.messagesContainer.scrollTop = elements.messagesContainer.scrollHeight;
+        }
+
+        // Send message
+        function sendMessage() {
+            const text = elements.messageInput.value.trim();
+            if (!text || !state.currentChat) return;
+            
+            const newMessage = {
+                id: state.currentChat.messages.length + 1,
+                senderId: state.currentUser.id,
+                text,
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            };
+            
+            state.currentChat.messages.push(newMessage);
+            renderMessages();
+            renderChatList(); // Update chat list preview
+            elements.messageInput.value = '';
+        }
+
+        // Initialize the app
+        init();
+    </script>
+</body>
+</html>
